@@ -1,7 +1,9 @@
 const crypto = require('crypto');
 const config = require('../../config.json');
 
-const { secret } = config;
+const {
+  twitch: { secret },
+} = config;
 
 const verifyTwitch = (messageId, timestamp, signature, body) => {
   const message = messageId + timestamp + body;
