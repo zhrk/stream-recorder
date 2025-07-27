@@ -7,7 +7,6 @@ const zip = require('./zip');
 
 let retries = 0;
 
-const logsFolder = './logs';
 const errorNotFound = 'VODs not found';
 
 const { tg_channel_id } = config;
@@ -25,14 +24,6 @@ const scrapKick = async (channel_slug, username, startTime) => {
     });
 
     const content = await page.content();
-
-    if (!existsSync(logsFolder)) mkdirSync(logsFolder);
-
-    writeFileSync(
-      `${logsFolder}/${channel_slug}-${startTime}${retries ? `-${retries}` : ''}.html`,
-      content,
-      { flag: 'w' }
-    );
 
     let titles = content.match(/"session_title.*?",/g);
     let dates = content.match(/"start_time.*?",/g);
