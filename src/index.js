@@ -7,7 +7,6 @@ const twitchRoute = require('./routes/twitchRoute');
 const twitchConfigRoute = require('./routes/twitchConfigRoute');
 const kickRoute = require('./routes/kickRoute');
 const kickConfigRoute = require('./routes/kickConfigRoute');
-// require('./tunnel');
 
 const { port } = config;
 
