@@ -14,7 +14,12 @@ const downloadStream = (platorm, username, channel_slug, startTime) => {
       '-1',
       'powershell',
       '-Command',
-      `${exe} ${proxy}${url}/${channel_slug} best -o ${output}`,
+      `${exe}`,
+      `--hls-live-restart`,
+      `--hls-playlist-reload-attempts 60 `,
+      `${proxy}${url}/${channel_slug}`,
+      `best`,
+      `-o ${output}`,
     ],
     { detached: true, stdio: 'ignore' }
   );
