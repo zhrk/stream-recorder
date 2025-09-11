@@ -1,18 +1,19 @@
-const winston = require('winston');
 const path = require('path');
 const fs = require('fs');
 
 const cwd = process.cwd();
 
 const dir = path.join(cwd, 'logs');
+const file = path.join(dir, 'messages.json');
 
 if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+if (!fs.existsSync(file)) fs.writeFileSync(file, '[]');
 
-const filename = path.join(cwd, 'logs', 'messages.json');
+/** @param {"twitch" | "kick"} platorm */
+const log = (message, platorm) => {
+  const prev = JSON.parse(fs.readFileSync(file));
 
-const logger = winston.createLogger({
-  format: winston.format.json(),
-  transports: [new winston.transports.File({ filename })],
-});
+  fs.writeFileSync(file, JSON.stringify([...prev, { platorm, message }], null, 2));
+};
 
-module.exports = { logger };
+module.exports = { log };
