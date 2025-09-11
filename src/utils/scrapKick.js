@@ -63,7 +63,7 @@ const scrapKick = async (channel_slug, username, startTime) => {
       throw new Error(errorNotFound);
     }
   } catch (error) {
-    if (error.message === errorNotFound) {
+    if (error.message === errorNotFound || error instanceof puppeteer.TimeoutError) {
       retries = retries + 1;
 
       setTimeout(() => {
