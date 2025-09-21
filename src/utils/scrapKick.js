@@ -13,7 +13,7 @@ const { tg_channel_id } = config;
 
 puppeteer.use(StealthPlugin());
 
-const scrapKick = async (channel_slug, username, startTime) => {
+const scrapKick = async (channel_slug) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -67,7 +67,7 @@ const scrapKick = async (channel_slug, username, startTime) => {
       retries = retries + 1;
 
       setTimeout(() => {
-        scrapKick(channel_slug, username, startTime);
+        scrapKick(channel_slug);
       }, 10000);
     } else {
       console.log(error.message);
