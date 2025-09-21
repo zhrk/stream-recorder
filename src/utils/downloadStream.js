@@ -25,11 +25,7 @@ const downloadStream = (platorm, username, channel_slug, startTime) => {
   );
 
   child.on('exit', (code) => {
-    if (code === 1) {
-      sendMessage('error-1');
-    } else {
-      sendMessage('error');
-    }
+    sendMessage(`error-${code}`);
   });
 };
 
