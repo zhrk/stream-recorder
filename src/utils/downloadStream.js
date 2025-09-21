@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const { sendMessage } = require('../services/bot');
 
 /** @param {"twitch" | "kick"} platorm */
 const downloadStream = (platorm, username, channel_slug, startTime) => {
@@ -6,7 +7,7 @@ const downloadStream = (platorm, username, channel_slug, startTime) => {
   const output = `C:/Users/PC/Desktop/server/vods/${username}-${startTime}.mp4`;
   const proxy = platorm === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
 
-  spawn(
+  const child = spawn(
     'wt',
     [
       '-w',
@@ -22,6 +23,14 @@ const downloadStream = (platorm, username, channel_slug, startTime) => {
     ],
     { detached: true, stdio: 'ignore' }
   );
+
+  child.on('exit', (code) => {
+    if (code === 1) {
+      sendMessage('error-1');
+    } else {
+      sendMessage('error');
+    }
+  });
 };
 
 module.exports = downloadStream;

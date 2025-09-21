@@ -1,15 +1,12 @@
 const puppeteer = require('puppeteer-extra');
 const { writeFileSync, readFileSync, existsSync, mkdirSync } = require('fs');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const config = require('../../config.json');
-const bot = require('../services/bot');
 const zip = require('./zip');
+const { sendMessage } = require('../services/bot');
 
 let retries = 0;
 
 const errorNotFound = 'VODs not found';
-
-const { tg_channel_id } = config;
 
 puppeteer.use(StealthPlugin());
 
@@ -52,9 +49,7 @@ const scrapKick = async (channel_slug) => {
 
     if (newVods.length) {
       newVods.forEach((vod) => {
-        bot.telegram.sendMessage(tg_channel_id, `${vod.title}\n<code>${vod.url}</code>`, {
-          parse_mode: 'HTML',
-        });
+        sendMessage(`${vod.title}\n<code>${vod.url}</code>`);
       });
 
       writeFileSync('vods.json', JSON.stringify([...newVods, ...oldVods], null, 2));
