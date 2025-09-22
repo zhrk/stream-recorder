@@ -25,17 +25,17 @@ const downloadStream = (...args) => {
     { detached: true, stdio: 'ignore' }
   );
 
-  child.on('exit', (code) => {
-    if (code === 1) {
-      if (retry <= 5) {
-        downloadStream(...args, retry + 1);
+  // child.on('exit', (code) => {
+  //   if (code === 1) {
+  //     if (retry <= 5) {
+  //       downloadStream(...args, retry + 1);
 
-        sendMessage(`retry-${retry + 1}`);
-      }
-    }
+  //       sendMessage(`retry-${retry + 1}`);
+  //     }
+  //   }
 
-    sendMessage(`error-${code}`);
-  });
+  //   sendMessage(`error-${code}`);
+  // });
 };
 
 module.exports = downloadStream;
