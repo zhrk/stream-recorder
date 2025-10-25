@@ -4,12 +4,15 @@ const {
   getTwitchSubscriptions,
   registerTwitchSubscription,
   clearTwitchSubscriptions,
+  getTwitchToken,
 } = require('../utils/twitch');
 const config = require('../../config.json');
 
 const { channels } = config;
 
 const twitchConfigRoute = async (c) => {
+  // getTwitchToken();
+
   // await clearTwitchSubscriptions();
 
   // for (const channel of channels.filter((item) => item.platorm === 'twitch')) {

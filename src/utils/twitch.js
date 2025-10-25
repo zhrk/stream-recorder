@@ -50,4 +50,9 @@ const clearTwitchSubscriptions = async () => {
   }
 };
 
-module.exports = { getTwitchSubscriptions, registerTwitchSubscription, clearTwitchSubscriptions };
+module.exports = {
+  getTwitchSubscriptions,
+  registerTwitchSubscription,
+  clearTwitchSubscriptions,
+  getTwitchToken,
+};
