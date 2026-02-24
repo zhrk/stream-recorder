@@ -1,19 +1,8 @@
-const path = require('path');
-const fs = require('fs');
+const pino = require('pino');
 
-const cwd = process.cwd();
-
-const dir = path.join(cwd, 'logs');
-const file = path.join(dir, 'messages.json');
-
-if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-if (!fs.existsSync(file)) fs.writeFileSync(file, '[]');
+const logger = pino(pino.destination('./logs/messages.log'));
 
 /** @param {"twitch" | "kick"} platorm */
-const log = (message, platorm) => {
-  const prev = JSON.parse(fs.readFileSync(file));
-
-  fs.writeFileSync(file, JSON.stringify([...prev, { platorm, message }], null, 2));
-};
+const log = (message, platorm) => logger.info({ payload: { platorm, message } });
 
 module.exports = { log };
