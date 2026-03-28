@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer-extra');
-const { writeFileSync, readFileSync, existsSync, mkdirSync } = require('fs');
+const { writeFileSync, readFileSync } = require('fs');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const zip = require('./zip');
 const { sendMessage } = require('../services/bot');
@@ -48,11 +48,12 @@ const scrapKick = async (channel_slug) => {
     const newVods = scrappedVods.filter((vod) => vod.url && !oldVodsUrls.has(vod.url));
 
     if (newVods.length) {
+      writeFileSync('vods.json', JSON.stringify([...newVods, ...oldVods], null, 2));
+
       newVods.forEach((vod) => {
         sendMessage(`${vod.title}\n<code>${vod.url}</code>`);
       });
 
-      writeFileSync('vods.json', JSON.stringify([...newVods, ...oldVods], null, 2));
       retries = 0;
     } else {
       throw new Error(errorNotFound);
