@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-const { sendMessage } = require('../services/bot');
+const { logDownload } = require('../services/logger');
 
 const downloadStream = (...args) => {
   const [platorm, username, channel_slug, startTime, retry = 0] = args;
@@ -25,17 +25,13 @@ const downloadStream = (...args) => {
     { detached: true, stdio: 'ignore' }
   );
 
-  // child.on('exit', (code) => {
-  //   if (code === 1) {
-  //     if (retry <= 5) {
-  //       downloadStream(...args, retry + 1);
+  child.on('exit', (code) => {
+    logDownload(`[INFO] [${username}] ${code}`);
+  });
 
-  //       sendMessage(`retry-${retry + 1}`);
-  //     }
-  //   }
-
-  //   sendMessage(`error-${code}`);
-  // });
+  child.on('error', (err) => {
+    logDownload(`[ERROR] [${username}] ${err.message}`);
+  });
 };
 
 module.exports = downloadStream;
