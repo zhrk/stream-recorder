@@ -9,20 +9,15 @@ const downloadStream = (...args) => {
   const proxy = platorm === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
 
   const child = spawn(
-    'wt',
+    'streamlink',
     [
-      '-w',
-      '-1',
-      'powershell',
-      '-Command',
-      `streamlink`,
-      `--hls-live-restart`,
-      `--hls-playlist-reload-attempts 60`,
+      '--hls-live-restart',
+      '--hls-playlist-reload-attempts 60',
       `${proxy}${url}/${channel_slug}`,
-      `best`,
+      'best',
       `-o ${output}`,
     ],
-    { detached: true, stdio: 'ignore' }
+    { stdio: 'ignore', windowsHide: false }
   );
 
   child.on('exit', (code) => {
