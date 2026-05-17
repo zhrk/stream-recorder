@@ -6,18 +6,20 @@ const downloadStream = (...args) => {
 
   const url = platorm === 'twitch' ? 'https://twitch.tv' : 'https://kick.com';
   const output = `C:/Users/PC/Desktop/server/vods/${username}-${startTime}.mp4`;
-  const proxy = platorm === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
 
   const child = spawn(
     'streamlink',
     [
       '--hls-live-restart',
-      '--hls-playlist-reload-attempts 60',
-      `${proxy}${url}/${channel_slug}`,
+      '--hls-playlist-reload-attempts',
+      '60',
+      ...(platorm === 'twitch' ? ['--http-proxy', 'http://127.0.0.1:12334'] : []),
+      `${url}/${channel_slug}`,
       'best',
-      `-o ${output}`,
+      '-o',
+      output,
     ],
-    { stdio: 'ignore', windowsHide: false }
+    { stdio: 'inherit', windowsHide: false }
   );
 
   child.on('exit', (code) => {
