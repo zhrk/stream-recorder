@@ -1,6 +1,8 @@
 const { spawn } = require('child_process');
 const { logDownload } = require('../services/logger');
 
+const CREATE_NEW_CONSOLE = 0x00000010;
+
 const downloadStream = (...args) => {
   const [platorm, username, channel_slug, startTime, retry = 0] = args;
 
@@ -19,7 +21,7 @@ const downloadStream = (...args) => {
       '-o',
       output,
     ],
-    { stdio: 'inherit', windowsHide: false }
+    { stdio: 'ignore', windowsHide: false, creationFlags: CREATE_NEW_CONSOLE }
   );
 
   child.on('exit', (code) => {
