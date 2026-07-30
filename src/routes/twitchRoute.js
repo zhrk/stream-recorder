@@ -2,6 +2,7 @@ const { format } = require('date-fns');
 const { verifyTwitch } = require('../utils/verify');
 const downloadStream = require('../utils/downloadStream');
 const { log } = require('../services/logger');
+const { DATE_TIME } = require('../constants/date');
 
 const twitchRoute = async (c) => {
   const messageType = c.req.header('twitch-eventsub-message-type');
@@ -33,7 +34,7 @@ const twitchRoute = async (c) => {
           broadcaster_user_login: channel_slug,
         } = event;
 
-        const startTime = format(new Date(started_at), 'yyyy-MM-dd_HH-mm-ss');
+        const startTime = format(new Date(started_at), DATE_TIME);
 
         console.log(
           `🟢 [t] ${username} online ${format(new Date(started_at), 'dd.MM.yyyy HH:mm:ss')}`

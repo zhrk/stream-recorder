@@ -1,72 +1,59 @@
 const puppeteer = require('puppeteer-extra');
 const { writeFileSync, readFileSync } = require('fs');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const zip = require('./zip');
 const { sendMessage } = require('../services/bot');
 
-let retries = 0;
-
-const errorNotFound = 'VODs not found';
+const getLinkId = (link) => link.split('/').at(-1);
 
 puppeteer.use(StealthPlugin());
 
-const scrapKick = async (channel_slug) => {
+const scrapKick = async (channel_slug, title, startTime) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
-    await page.goto(`https://kick.com/${channel_slug}/videos`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000,
-    });
+    await page.goto(`https://kick.com/${channel_slug}/videos`, { waitUntil: 'domcontentloaded' });
 
-    const content = await page.content();
-
-    let titles = content.match(/"session_title.*?",/g);
-    let dates = content.match(/"start_time.*?",/g);
-    const urls = content.match(/https:\/\/stream\.kick\.com[^"\s]*?\.m3u8/g);
-
-    if (titles === null || dates === null || urls === null) {
-      throw new Error(errorNotFound);
-    }
-
-    if (titles.length > urls.length && dates.length > urls.length) {
-      titles = titles.toSpliced(-1, 1);
-      dates = dates.toSpliced(-1, 1);
-    }
-
-    const scrappedVods = zip(titles, urls, dates).map((item) => ({
-      title: item[0].replace('"session_title\\":\\"', '').replace('\\",', ''),
-      start_time: item[2].replace('"start_time\\":\\"', '').replace('\\",', ''),
-      url: item[1],
-    }));
+    let links = await page.$$eval('[data-testid="livestream-results-card"]>a', (anchors) =>
+      anchors.map((a) => a.href)
+    );
 
     const oldVods = JSON.parse(readFileSync('vods.json'));
 
-    const oldVodsUrls = new Set(oldVods.map((vod) => vod.url));
+    const oldVodsIds = oldVods.map((vod) => vod.id);
 
-    const newVods = scrappedVods.filter((vod) => vod.url && !oldVodsUrls.has(vod.url));
+    links = links.filter((link) => !oldVodsIds.includes(getLinkId(link)));
 
-    if (newVods.length) {
-      writeFileSync('vods.json', JSON.stringify([...newVods, ...oldVods], null, 2));
+    await page.close();
 
-      newVods.forEach((vod) => {
-        sendMessage(`${vod.title}\n<code>${vod.url}</code>`);
+    for (const link of links) {
+      const vodPage = await browser.newPage();
+      await vodPage.setRequestInterception(true);
+
+      vodPage.on('request', (request) => {
+        let url = request.url();
+
+        if (url.includes('master.m3u8')) {
+          url = url.split('?')[0];
+
+          writeFileSync(
+            'vods.json',
+            JSON.stringify(
+              [{ title, start_time: startTime, id: getLinkId(link), url }, ...oldVods],
+              null,
+              2
+            )
+          );
+
+          sendMessage(`${title}\n<code>${url}</code>`);
+        }
+
+        request.continue();
       });
 
-      retries = 0;
-    } else {
-      throw new Error(errorNotFound);
-    }
-  } catch (error) {
-    if (error.message === errorNotFound || error.message.includes('timeout')) {
-      retries = retries + 1;
+      await vodPage.goto(link, { waitUntil: 'networkidle2' });
 
-      setTimeout(() => {
-        scrapKick(channel_slug);
-      }, 10000);
-    } else {
-      console.log(error.message);
+      await vodPage.close();
     }
   } finally {
     await browser.close();

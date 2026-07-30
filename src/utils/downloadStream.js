@@ -1,5 +1,4 @@
 const { spawn } = require('child_process');
-const { logDownload } = require('../services/logger');
 
 const downloadStream = (...args) => {
   const [platorm, username, channel_slug, startTime, retry = 0] = args;
@@ -24,14 +23,6 @@ const downloadStream = (...args) => {
     ],
     { stdio: 'ignore', detached: true }
   );
-
-  child.on('exit', (code) => {
-    logDownload(`[INFO] [${username}] ${code}`);
-  });
-
-  child.on('error', (err) => {
-    logDownload(`[ERROR] [${username}] ${err.message}`);
-  });
 };
 
 module.exports = downloadStream;

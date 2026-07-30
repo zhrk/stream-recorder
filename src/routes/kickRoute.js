@@ -17,6 +17,7 @@ const kickRoute = async (c) => {
 
   if (verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature)) {
     const {
+      title,
       is_live,
       started_at,
       broadcaster: { user_id, username, channel_slug },
@@ -37,9 +38,7 @@ const kickRoute = async (c) => {
         (channel) => channel.platorm === 'kick' && channel.id === id
       )?.notify;
 
-      if (shouldNotify) scrapKick(channel_slug, username, startTime);
-    } else {
-      console.log(`🔵 [k] ${username} offline`);
+      if (shouldNotify) scrapKick(channel_slug, title, startTime);
     }
   } else {
     console.log('❌ Kick verification failed');
