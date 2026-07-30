@@ -55,6 +55,10 @@ const scrapKick = async (channel_slug, title, startTime) => {
 
       await vodPage.close();
     }
+  } catch (error) {
+    if (!error.message.includes('timeout')) {
+      console.log(error.message);
+    }
   } finally {
     await browser.close();
   }
