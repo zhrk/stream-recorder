@@ -3,10 +3,10 @@ const { StringSession } = require('telegram/sessions');
 const { NewMessage } = require('telegram/events');
 const config = require('../../config.json');
 
-const { tg_app } = config;
+const { tg } = config;
 
 (async () => {
-  const client = new TelegramClient(new StringSession(tg_app.session), tg_app.id, tg_app.hash, {
+  const client = new TelegramClient(new StringSession(tg.app.session), tg.app.id, tg.app.hash, {
     connectionRetries: 5,
     proxy: { ip: '127.0.0.1', port: 12334, socksType: 5 },
   });
@@ -17,6 +17,6 @@ const { tg_app } = config;
     (event) => {
       console.log(event.message);
     },
-    new NewMessage({ fromUsers: tg_app.from })
+    new NewMessage({ fromUsers: tg.app.from })
   );
 })();
