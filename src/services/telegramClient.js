@@ -13,11 +13,13 @@ const { tg } = config;
 
   await client.connect();
 
+  const me = await client.getMe();
+  const myId = me.id;
+
   client.addEventHandler(
     (event) => {
       console.log(event.message);
     },
-    // new NewMessage({ fromUsers: tg.app.from })
-    new NewMessage({})
+    new NewMessage({ chats: [...Object.values(tg.app.chat_ids), myId] })
   );
 })();
