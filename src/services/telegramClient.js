@@ -17,6 +17,7 @@ const { tg } = config;
     (event) => {
       console.log(event.message);
     },
-    new NewMessage({ fromUsers: tg.app.from })
+    // new NewMessage({ fromUsers: tg.app.from })
+    new NewMessage({})
   );
 })();
