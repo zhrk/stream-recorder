@@ -14,7 +14,7 @@ const { tg } = config;
   await client.connect();
 
   const me = await client.getMe();
-  const myId = me.id;
+  const myId = BigInt(me.id);
 
   client.addEventHandler(
     (event) => {
