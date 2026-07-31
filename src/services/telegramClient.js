@@ -20,6 +20,9 @@ const { tg } = config;
     (event) => {
       console.log(event.message);
     },
-    new NewMessage({ chats: [...Object.values(tg.app.chat_ids), myId], incoming: true })
+    new NewMessage({
+      chats: [...Object.values(tg.app.chat_ids).map((id) => BigInt(id)), myId],
+      incoming: true,
+    })
   );
 })();
