@@ -1,13 +1,18 @@
 const { spawn } = require('child_process');
 
-const downloadStream = (...args) => {
-  const [platorm, username, channel_slug, startTime, retry = 0] = args;
+const URLS = {
+  twitch: 'https://twitch.tv',
+  kick: 'https://kick.com',
+};
 
-  const url = platorm === 'twitch' ? 'https://twitch.tv' : 'https://kick.com';
+const downloadStream = (...args) => {
+  const [platorm, username, channel_slug, startTime] = args;
+
+  const url = URLS[platorm];
   const output = `C:/Users/PC/Desktop/server/vods/${username}-${startTime}.mp4`;
   const proxy = platorm === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
 
-  const child = spawn(
+  spawn(
     'wt',
     [
       '-w',
