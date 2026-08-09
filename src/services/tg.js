@@ -17,7 +17,7 @@ const { tg } = config;
 
   client.addEventHandler(async (update) => {
     if (update.className === 'UpdateNewChannelMessage') {
-      if (update.message.fromId.channelId.value === BigInt(tg.app.chat_id)) {
+      if (update.message.fromId.channelId.value === BigInt(tg.app.channel.id)) {
         writeFileSync(
           path.join(process.cwd(), 'tg', `${new Date().getTime()}.json`),
           JSON.stringify(update, null, 2)
