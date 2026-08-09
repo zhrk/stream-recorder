@@ -15,8 +15,6 @@ const { tg } = config;
 
   await client.start();
 
-  console.log('✅ client');
-
   client.addEventHandler(async (update) => {
     if (update.className === 'UpdateNewChannelMessage') {
       if (update.message.fromId.channelId.value === BigInt(tg.app.chat_id)) {

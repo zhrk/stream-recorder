@@ -16,7 +16,6 @@ const waitForProxy = () =>
   new Promise((resolve) => {
     const check = () => {
       const socket = net.connect(12334, '127.0.0.1', () => {
-        console.log('✅ proxy');
         socket.destroy();
         resolve();
       });
@@ -33,7 +32,7 @@ const waitForProxy = () =>
 (async () => {
   await waitForProxy();
 
-  bot.launch(() => console.log('✅ bot'));
+  bot.launch();
 
   const app = new Hono({ port });
 
