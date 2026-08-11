@@ -2,6 +2,8 @@ const puppeteer = require('puppeteer-extra');
 const { writeFileSync, readFileSync } = require('fs');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { sendMessage } = require('../services/bot');
+const config = require('../../config.json');
+const { logKickLink } = require('../services/logger');
 
 const getLinkId = (link) => link.split('/').at(-1);
 
@@ -36,16 +38,19 @@ const scrapKick = async (channel_slug, title, startTime) => {
         if (url.includes('master.m3u8')) {
           url = url.split('?')[0];
 
-          writeFileSync(
-            'vods.json',
-            JSON.stringify(
-              [{ title, start_time: startTime, id: getLinkId(link), url }, ...oldVods],
-              null,
-              2
-            )
-          );
+          const vod = { title, start_time: startTime, id: getLinkId(link), url };
 
-          sendMessage(`${title}\n<code>${url}</code>`);
+          writeFileSync('vods.json', JSON.stringify([vod, ...oldVods], null, 2));
+
+          const flags = config.channels.find(
+            (channel) => channel.platorm === 'kick' && channel.id === id
+          ).flags;
+
+          logKickLink(vod);
+
+          if (flags.includes('notify')) {
+            sendMessage(`${title}\n<code>${url}</code>`);
+          }
         }
 
         request.continue();

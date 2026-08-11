@@ -32,13 +32,15 @@ const kickRoute = async (c) => {
         `🟢 [k] ${username} online ${format(new Date(started_at), 'dd.MM.yyyy HH:mm:ss')}`
       );
 
-      downloadStream('kick', username, channel_slug, startTime);
-
-      const shouldNotify = config.channels.find(
+      const flags = config.channels.find(
         (channel) => channel.platorm === 'kick' && channel.id === id
-      )?.notify;
+      ).flags;
 
-      if (shouldNotify) scrapKick(channel_slug, title, startTime);
+      if (flags.includes('download')) {
+        downloadStream('kick', username, channel_slug, startTime);
+      }
+
+      scrapKick(channel_slug, title, startTime);
     }
   } else {
     console.log('❌ Kick verification failed');
