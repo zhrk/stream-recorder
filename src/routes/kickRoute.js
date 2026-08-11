@@ -40,7 +40,7 @@ const kickRoute = async (c) => {
         downloadStream('kick', username, channel_slug, startTime);
       }
 
-      scrapKick(channel_slug, title, startTime);
+      scrapKick(channel_slug, title, startTime, flags.includes('notify'));
     }
   } else {
     console.log('❌ Kick verification failed');

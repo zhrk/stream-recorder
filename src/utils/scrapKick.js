@@ -2,14 +2,13 @@ const puppeteer = require('puppeteer-extra');
 const { writeFileSync, readFileSync } = require('fs');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { sendMessage } = require('../services/bot');
-const config = require('../../config.json');
 const { logKickLink } = require('../services/logger');
 
 const getLinkId = (link) => link.split('/').at(-1);
 
 puppeteer.use(StealthPlugin());
 
-const scrapKick = async (channel_slug, title, startTime) => {
+const scrapKick = async (channel_slug, title, startTime, notify) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -42,13 +41,9 @@ const scrapKick = async (channel_slug, title, startTime) => {
 
           writeFileSync('vods.json', JSON.stringify([vod, ...oldVods], null, 2));
 
-          const flags = config.channels.find(
-            (channel) => channel.platorm === 'kick' && channel.id === id
-          ).flags;
-
           logKickLink(vod);
 
-          if (flags.includes('notify')) {
+          if (notify) {
             sendMessage(`${title}\n<code>${url}</code>`);
           }
         }
