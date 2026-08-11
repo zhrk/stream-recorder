@@ -2,7 +2,7 @@
   "name": "stream-recorder",
   "version": "0.0.0",
   "scripts": {
-    "start": "node --no-warnings ./src/index.js"
+    "start": "node ./src/index.js"
   },
   "dependencies": {
     "@hono/node-server": "1.17.1",
@@ -15,7 +15,6 @@
     "puppeteer": "24.15.0",
     "puppeteer-extra": "3.3.6",
     "puppeteer-extra-plugin-stealth": "2.11.2",
-    "telegraf": "4.16.3",
-    "telegram": "2.26.22"
+    "telegraf": "4.16.3"
   }
 }
