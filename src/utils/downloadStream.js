@@ -26,7 +26,7 @@ const downloadStream = (...args) => {
     output,
   ].join(' ');
 
-  spawn('oxmgr', ['start', streamlinkCommand, '--name', processName, '--restart', 'never'], {
+  spawn('oxmgr.exe', ['start', streamlinkCommand, '--name', processName, '--restart', 'never'], {
     stdio: 'ignore',
     detached: true,
     shell: true,
