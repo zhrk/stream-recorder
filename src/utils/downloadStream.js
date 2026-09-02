@@ -1,5 +1,18 @@
 const { spawn } = require('child_process');
 
+const findOxmgr = () => {
+  try {
+    return execFileSync('where', ['oxmgr'], { encoding: 'utf8', windowsHide: true })
+      .split(/\r?\n/)
+      .map((x) => x.trim())
+      .find(Boolean);
+  } catch {
+    return null;
+  }
+};
+
+const OXMGR = findOxmgr();
+
 const URLS = {
   twitch: 'https://twitch.tv',
   kick: 'https://kick.com',
@@ -26,17 +39,11 @@ const downloadStream = (...args) => {
     `"${output}"`,
   ].join(' ');
 
-  console.log(process.env.PATH);
-
-  spawn(
-    'cmd.exe',
-    ['/c', 'oxmgr', 'start', streamlinkCommand, '--name', processName, '--restart', 'never'],
-    {
-      stdio: 'ignore',
-      detached: true,
-      windowsHide: true,
-    }
-  );
+  spawn(OXMGR, ['start', streamlinkCommand, '--name', processName, '--restart', 'never'], {
+    stdio: 'ignore',
+    detached: true,
+    windowsHide: true,
+  });
 };
 
 module.exports = downloadStream;
