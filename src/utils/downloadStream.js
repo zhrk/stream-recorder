@@ -10,24 +10,26 @@ const downloadStream = (...args) => {
 
   const url = URLS[platorm];
   const output = `C:/Users/PC/Desktop/server/vods/${username}-${startTime}.mp4`;
-  const proxy = platorm === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
+  const proxyArgs = platorm === 'twitch' ? ['--http-proxy', 'http://127.0.0.1:12334'] : [];
 
-  spawn(
-    'wt',
-    [
-      '-w',
-      '-1',
-      'powershell',
-      '-Command',
-      `streamlink`,
-      `--hls-live-restart`,
-      `--hls-playlist-reload-attempts 60`,
-      `${proxy}${url}/${channel_slug}`,
-      `best`,
-      `-o ${output}`,
-    ],
-    { stdio: 'ignore', detached: true }
-  );
+  const processName = `streamlink-${username}-${startTime}`;
+
+  const streamlinkCommand = [
+    'streamlink',
+    '--hls-live-restart',
+    '--hls-playlist-reload-attempts',
+    '60',
+    ...proxyArgs,
+    `${url}/${channel_slug}`,
+    'best',
+    '-o',
+    output,
+  ].join(' ');
+
+  spawn('oxmgr', ['start', streamlinkCommand, '--name', processName, '--restart', 'never'], {
+    stdio: 'ignore',
+    detached: true,
+  });
 };
 
 module.exports = downloadStream;
