@@ -23,10 +23,10 @@ const downloadStream = (...args) => {
     `${url}/${channel_slug}`,
     'best',
     '-o',
-    `\\"${output}\\"`,
+    `"${output}"`,
   ].join(' ');
 
-  spawn('oxmgr.exe', [`start \\"${streamlinkCommand}\\" --name "${processName}" --restart never`], {
+  spawn(`oxmgr.exe start "${streamlinkCommand}" --name "${processName}" --restart never`, {
     stdio: 'ignore',
     detached: true,
     shell: true,
