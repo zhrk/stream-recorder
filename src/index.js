@@ -1,7 +1,6 @@
 const net = require('net');
 const { Hono } = require('hono');
 const { serve } = require('@hono/node-server');
-const bot = require('./services/bot');
 const config = require('../config.json');
 const indexRoute = require('./routes/indexRoute');
 const twitchRoute = require('./routes/twitchRoute');
@@ -30,8 +29,6 @@ const waitForProxy = () =>
 
 (async () => {
   await waitForProxy();
-
-  bot.launch();
 
   const app = new Hono({ port });
 
