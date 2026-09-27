@@ -7,14 +7,11 @@
   "dependencies": {
     "@hono/node-server": "1.17.1",
     "axios": "1.11.0",
-    "concurrently": "9.2.0",
     "date-fns": "4.4.0",
     "hono": "4.8.9",
-    "https-proxy-agent": "7.0.6",
     "pino": "10.3.1",
     "puppeteer": "24.15.0",
     "puppeteer-extra": "3.3.6",
-    "puppeteer-extra-plugin-stealth": "2.11.2",
-    "telegraf": "4.16.3"
+    "puppeteer-extra-plugin-stealth": "2.11.2"
   }
 }
