@@ -15,7 +15,7 @@ const kickRoute = async (c) => {
 
   log(body, 'kick');
 
-  if (verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature)) {
+  if (await verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature)) {
     const {
       title,
       is_live,
