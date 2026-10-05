@@ -44,6 +44,8 @@ const verifyKick = async (signatureMessage, signature) => {
   let valid = verify(signatureMessage, signature, kickPublicKey);
 
   if (!valid) {
+    console.log('🔑 public key refresh');
+
     const newKey = await refreshKickPublicKey();
 
     if (newKey) {
