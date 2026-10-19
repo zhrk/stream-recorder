@@ -15,7 +15,7 @@ const scrapKick = async (channel_slug, title, startTime, notify) => {
   try {
     await page.goto(`https://kick.com/${channel_slug}/videos`, { waitUntil: 'domcontentloaded' });
 
-    let links = await page.$$eval('[data-testid="livestream-results-card"]>a', (anchors) =>
+    let links = await page.$$eval('[data-testid="vods-card"]>a', (anchors) =>
       anchors.map((a) => a.href)
     );
 
