@@ -1,4 +1,7 @@
 const { spawn } = require('child_process');
+const config = require('../../config.json');
+
+const { vods_dir } = config;
 
 const URLS = {
   twitch: 'https://twitch.tv',
@@ -9,7 +12,7 @@ const downloadStream = (...args) => {
   const [platform, username, channel_slug, startTime] = args;
 
   const url = URLS[platform];
-  const output = `C:/Users/PC/Desktop/server/vods/${username}-${startTime}.mp4`;
+  const output = `${vods_dir}/${username}-${startTime}.mp4`;
   const proxy = platform === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
 
   spawn(
