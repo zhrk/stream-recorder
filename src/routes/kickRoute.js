@@ -4,6 +4,7 @@ const config = require('../../config.json');
 const scrapKick = require('../utils/scrapKick');
 const downloadStream = require('../utils/downloadStream');
 const { log } = require('../services/logger');
+const { DATE_TIME } = require('../constants/date');
 
 const kickRoute = async (c) => {
   const messageId = c.req.header('Kick-Event-Message-Id');
@@ -26,7 +27,7 @@ const kickRoute = async (c) => {
     const id = String(user_id);
 
     if (is_live) {
-      const startTime = format(new Date(started_at), 'yyyy-MM-dd_HH-mm-ss');
+      const startTime = format(new Date(started_at), DATE_TIME);
 
       console.log(
         `🟢 [k] ${username} online ${format(new Date(started_at), 'dd.MM.yyyy HH:mm:ss')}`
