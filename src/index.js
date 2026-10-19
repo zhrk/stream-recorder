@@ -7,6 +7,7 @@ const twitchRoute = require('./routes/twitchRoute');
 const twitchConfigRoute = require('./routes/twitchConfigRoute');
 const kickRoute = require('./routes/kickRoute');
 const kickConfigRoute = require('./routes/kickConfigRoute');
+const kickManualRoute = require('./routes/kickManualRoute');
 
 const { port } = config;
 
@@ -36,6 +37,7 @@ const waitForProxy = () =>
 
   app.post('/kick/webhook', kickRoute);
   app.get('/kick/config', kickConfigRoute);
+  app.get('/kick/manual', kickManualRoute);
 
   app.post('/twitch/webhook', twitchRoute);
   app.get('/twitch/config', twitchConfigRoute);
