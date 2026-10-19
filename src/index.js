@@ -37,7 +37,7 @@ const waitForProxy = () =>
 
   app.post('/kick/webhook', kickRoute);
   app.get('/kick/config', kickConfigRoute);
-  app.post('/kick/manual', kickManualRoute);
+  // app.post('/kick/manual', kickManualRoute);
 
   app.post('/twitch/webhook', twitchRoute);
   app.get('/twitch/config', twitchConfigRoute);
