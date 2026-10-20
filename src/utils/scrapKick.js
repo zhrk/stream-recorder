@@ -15,7 +15,9 @@ const scrapKick = async (channel_slug, notify) => {
 
     const oldVods = JSON.parse(readFileSync('vods.json'));
 
-    const newVods = vods.filter((v) => !oldVods.some((o) => o.url === v.source.split('?')[0]));
+    const newVods = vods
+      .filter((v) => !oldVods.some((o) => o.url === v.source.split('?')[0]))
+      .toReversed();
 
     for (const info of newVods) {
       const vod = {
