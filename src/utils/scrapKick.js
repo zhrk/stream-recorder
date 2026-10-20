@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer-extra');
 const { writeFileSync, readFileSync } = require('fs');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const { format } = require('date-fns');
+const { DATE_TIME } = require('../constants/date');
 const { sendMessage } = require('../services/bot');
 const { logKickLink } = require('../services/logger');
 
@@ -8,16 +10,20 @@ const getLinkId = (link) => link.split('/').at(-1);
 
 puppeteer.use(StealthPlugin());
 
-const scrapKick = async (channel_slug, title, startTime, notify) => {
+const scrapKick = async (channel_slug, title, notify) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
     await page.goto(`https://kick.com/${channel_slug}/videos`, { waitUntil: 'domcontentloaded' });
 
-    let links = await page.$$eval('[data-testid="vods-card"]>a', (anchors) =>
-      anchors.map((a) => a.href)
-    );
+    await page.waitForSelector('a[href*="/videos/"]');
+
+    let links = await page.$$eval('a[href*="/videos/"]', (anchors) => {
+      const filteredLinks = anchors.map((a) => a.href).filter((href) => href.includes('/videos/'));
+
+      return [...new Set(filteredLinks)];
+    });
 
     const oldVods = JSON.parse(readFileSync('vods.json'));
 
@@ -29,29 +35,32 @@ const scrapKick = async (channel_slug, title, startTime, notify) => {
 
     for (const link of links) {
       const vodPage = await browser.newPage();
-      await vodPage.setRequestInterception(true);
 
-      vodPage.on('request', (request) => {
-        let url = request.url();
+      await vodPage.goto(link, { waitUntil: 'domcontentloaded' });
 
-        if (url.includes('master.m3u8')) {
-          url = url.split('?')[0];
+      const html = await vodPage.content();
 
-          const vod = { title, start_time: startTime, id: getLinkId(link), url };
+      const data = html.match(
+        /recording_url\\*":\\*"([^"]*?master\.m3u8[^"]*?)\\*",\\*"start_time\\*":\\*"([^"]*?)\\*"/
+      );
 
-          writeFileSync('vods.json', JSON.stringify([vod, ...oldVods], null, 2));
+      if (data) {
+        const vod = {
+          title,
+          start_time: format(new Date(data[2]), DATE_TIME),
+          id: getLinkId(link),
+          url: data[1].split('?')[0],
+        };
 
-          logKickLink(vod);
+        oldVods.unshift(vod);
+        writeFileSync('vods.json', JSON.stringify(oldVods, null, 2));
 
-          if (notify) {
-            sendMessage(`${title}\n<code>${url}</code>`);
-          }
+        logKickLink(vod);
+
+        if (notify) {
+          sendMessage(`${title}\n<code>${vod.url}</code>`);
         }
-
-        request.continue();
-      });
-
-      await vodPage.goto(link, { waitUntil: 'networkidle2' });
+      }
 
       await vodPage.close();
     }

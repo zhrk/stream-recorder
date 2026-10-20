@@ -69,14 +69,9 @@ const manualScrapKick = async (slug) => {
     params: { slug },
   });
 
-  const {
-    stream_title,
-    stream: { start_time },
-  } = response.data.data[0];
+  const { stream_title } = response.data.data[0];
 
-  const startTime = format(new Date(start_time), DATE_TIME);
-
-  scrapKick(slug, stream_title, startTime, true);
+  scrapKick(slug, stream_title, true);
 };
 
 module.exports = {
