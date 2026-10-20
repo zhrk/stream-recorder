@@ -1,8 +1,6 @@
 const axios = require('axios');
 const UserAgent = require('user-agents');
 const { writeFileSync, readFileSync } = require('fs');
-const { format } = require('date-fns');
-const { DATE_TIME } = require('../constants/date');
 const { sendMessage } = require('../services/bot');
 const { logKickLink } = require('../services/logger');
 
@@ -22,7 +20,7 @@ const scrapKick = async (channel_slug, notify) => {
     for (const info of newVods) {
       const vod = {
         title: info.session_title,
-        start_time: format(new Date(info.start_time + 'Z'), DATE_TIME),
+        start_time: info.start_time,
         id: info.slug,
         url: info.source.split('?')[0],
       };
