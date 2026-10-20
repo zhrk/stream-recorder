@@ -1,5 +1,5 @@
 const config = require('../../config.json');
-const { manualScrapKick } = require('../utils/kick');
+const scrapKick = require('../utils/scrapKick');
 
 const kickManualRoute = async (c) => {
   const token = c.req.header('X-Token');
@@ -8,7 +8,7 @@ const kickManualRoute = async (c) => {
 
   const body = await c.req.json();
 
-  manualScrapKick(body.slug);
+  scrapKick(body.slug, true);
 
   return c.body(null, 200);
 };

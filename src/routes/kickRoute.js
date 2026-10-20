@@ -18,7 +18,6 @@ const kickRoute = async (c) => {
 
   if (await verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature)) {
     const {
-      title,
       is_live,
       started_at,
       broadcaster: { user_id, username, channel_slug },
@@ -41,7 +40,7 @@ const kickRoute = async (c) => {
         downloadStream('kick', username, channel_slug, startTime);
       }
 
-      scrapKick(channel_slug, title, flags.includes('notify'));
+      scrapKick(channel_slug, flags.includes('notify'));
     }
   } else {
     console.log('❌ Kick verification failed');

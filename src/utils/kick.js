@@ -1,8 +1,5 @@
 const axios = require('axios');
 const config = require('../../config.json');
-const scrapKick = require('./scrapKick');
-const { format } = require('date-fns');
-const { DATE_TIME } = require('../constants/date');
 
 const {
   kick: { client_id, client_secret },
@@ -61,22 +58,8 @@ const clearKickSubscriptions = async () => {
   }
 };
 
-const manualScrapKick = async (slug) => {
-  const headers = await getHeaders();
-
-  const response = await axios.get('https://api.kick.com/public/v1/channels', {
-    headers,
-    params: { slug },
-  });
-
-  const { stream_title } = response.data.data[0];
-
-  scrapKick(slug, stream_title, true);
-};
-
 module.exports = {
   getKickSubscriptions,
   registerKickSubscription,
   clearKickSubscriptions,
-  manualScrapKick,
 };
