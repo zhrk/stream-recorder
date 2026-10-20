@@ -1,4 +1,4 @@
-const { config } = require('../../config.json');
+const config = require('../../config.json');
 const { manualScrapKick } = require('../utils/kick');
 
 const kickManualRoute = async (c) => {
