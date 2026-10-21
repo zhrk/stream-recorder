@@ -2,10 +2,6 @@ const crypto = require('crypto');
 const axios = require('axios');
 const config = require('../../config.json');
 
-const {
-  twitch: { secret },
-} = config;
-
 let kickPublicKey = null;
 
 const refreshKickPublicKey = async () => {
@@ -30,7 +26,7 @@ const verify = (signatureMessage, signature, publicKey) =>
 const verifyTwitch = (messageId, timestamp, signature, body) => {
   const message = messageId + timestamp + body;
 
-  const hmac = crypto.createHmac('sha256', secret);
+  const hmac = crypto.createHmac('sha256', config.twitch.secret);
   const hmacSignature = 'sha256=' + hmac.update(message).digest('hex');
 
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(hmacSignature));
