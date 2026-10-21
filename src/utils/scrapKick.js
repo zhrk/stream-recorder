@@ -40,7 +40,7 @@ const scrapKick = async (channel_slug, notify) => {
 
     const oldVodsIds = oldVods.map((vod) => vod.id);
 
-    for (const id of ids.filter((id) => !oldVodsIds.includes(id))) {
+    for (const id of ids.filter((id) => !oldVodsIds.includes(id)).toReversed()) {
       const { data: page } = await axios.get(
         `https://kick.com/${channel_slug}/videos/${id}`,
         axiosConfig
