@@ -3,7 +3,7 @@ const { verifyKick } = require('../utils/verify');
 const config = require('../../config.json');
 const scrapKick = require('../utils/scrapKick');
 const downloadStream = require('../utils/downloadStream');
-const { DATE_TIME } = require('../constants/date');
+const { DATE_TIME } = require('../date');
 
 const kickRoute = async (c) => {
   const messageId = c.req.header('Kick-Event-Message-Id');

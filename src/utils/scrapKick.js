@@ -1,7 +1,7 @@
 const axios = require('axios');
 const UserAgent = require('user-agents');
 const { writeFileSync, readFileSync } = require('fs');
-const { sendMessage } = require('../services/bot');
+const { sendMessage } = require('../bot');
 
 const axiosConfig = {
   headers: { 'User-Agent': new UserAgent().toString() },

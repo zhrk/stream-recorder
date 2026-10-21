@@ -1,7 +1,7 @@
 const { format } = require('date-fns');
 const { verifyTwitch } = require('../utils/verify');
 const downloadStream = require('../utils/downloadStream');
-const { DATE_TIME } = require('../constants/date');
+const { DATE_TIME } = require('../date');
 
 const twitchRoute = async (c) => {
   const messageType = c.req.header('twitch-eventsub-message-type');
