@@ -8,6 +8,7 @@ const twitchConfigRoute = require('./routes/twitchConfigRoute');
 const kickRoute = require('./routes/kickRoute');
 const kickConfigRoute = require('./routes/kickConfigRoute');
 const kickManualRoute = require('./routes/kickManualRoute');
+const scrapKickApi = require('./utils/scrapKickApi');
 
 const waitForProxy = () =>
   new Promise((resolve) => {
