@@ -1,11 +1,12 @@
-const { format } = require('date-fns');
-const { verifyKick } = require('../utils/verify');
-const config = require('../../config.json');
-const scrapKick = require('../utils/scrapKick');
-const downloadStream = require('../utils/downloadStream');
-const { DATE_TIME } = require('../date');
+import { format } from 'date-fns';
+import { verifyKick } from '../verify';
+import config from '../../config.json';
+import scrapKick from '../scrapKick';
+import downloadStream from '../downloadStream';
+import { DATE_TIME } from '../date';
+import { Context } from 'hono';
 
-const kickRoute = async (c) => {
+const kickRoute = async (c: Context) => {
   const messageId = c.req.header('Kick-Event-Message-Id');
   const timestamp = c.req.header('Kick-Event-Message-Timestamp');
   const signature = c.req.header('Kick-Event-Signature');
@@ -13,7 +14,7 @@ const kickRoute = async (c) => {
   const body = await c.req.json();
   const rawBody = await c.req.text();
 
-  if (await verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature)) {
+  if (await verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature!)) {
     const {
       is_live,
       started_at,
@@ -29,9 +30,9 @@ const kickRoute = async (c) => {
         `🟢 [k] ${username} online ${format(new Date(started_at), 'dd.MM.yyyy HH:mm:ss')}`
       );
 
-      const flags = config.channels.find(
-        (channel) => channel.platform === 'kick' && channel.id === id
-      ).flags;
+      const flags =
+        config.channels.find((channel) => channel.platform === 'kick' && channel.id === id)
+          ?.flags || [];
 
       if (flags.includes('download')) {
         downloadStream('kick', username, channel_slug, startTime);
@@ -46,4 +47,4 @@ const kickRoute = async (c) => {
   return c.body(null, 200);
 };
 
-module.exports = kickRoute;
+export default kickRoute;

@@ -1,12 +1,12 @@
-const { spawn } = require('child_process');
-const config = require('../../config.json');
+import { spawn } from 'child_process';
+import config from '../config.json';
 
-const URLS = {
+const URLS: Record<string, string> = {
   twitch: 'https://twitch.tv',
   kick: 'https://kick.com',
 };
 
-const downloadStream = (...args) => {
+const downloadStream = (...args: string[]) => {
   const [platform, username, channel_slug, startTime] = args;
 
   const url = URLS[platform];
@@ -31,4 +31,4 @@ const downloadStream = (...args) => {
   );
 };
 
-module.exports = downloadStream;
+export default downloadStream;

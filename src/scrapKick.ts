@@ -1,14 +1,17 @@
-const axios = require('axios');
-const UserAgent = require('user-agents');
-const { writeFileSync, readFileSync } = require('fs');
-const { sendMessage } = require('../bot');
+import axios, { AxiosRequestConfig, isAxiosError } from 'axios';
+import UserAgent from 'user-agents';
+import { writeFileSync, readFileSync } from 'fs';
+import { StoredVods } from './types';
+import { sendMessage } from './bot';
 
-const axiosConfig = {
+type HTML = string;
+
+const axiosConfig: AxiosRequestConfig = {
   headers: { 'User-Agent': new UserAgent().toString() },
   responseType: 'text',
 };
 
-const parseVodPage = (html, id) => {
+const parseVodPage = (html: HTML, id: string): StoredVods[number] | null => {
   html = html.replace(/\\{1,2}"/g, '"').replace(/\\\\/g, '\\');
 
   if (!html.includes(id)) return null;
@@ -29,18 +32,18 @@ const parseVodPage = (html, id) => {
     : null;
 };
 
-const scrapKick = async (channel_slug, notify) => {
+const scrapKick = async (channel_slug: string, notify: boolean) => {
   try {
     const { data: list } = await axios.get(`https://kick.com/${channel_slug}/videos`, axiosConfig);
 
     const ids = [...new Set([...list.matchAll(/\/videos\/([0-9a-f-]{36})/g)].map((m) => m[1]))];
 
-    const oldVods = JSON.parse(readFileSync('vods.json'));
+    const oldVods: StoredVods = JSON.parse(readFileSync('vods.json', 'utf8'));
 
     const oldVodsIds = oldVods.map((vod) => vod.id);
 
     for (const id of ids.filter((id) => !oldVodsIds.includes(id)).toReversed()) {
-      const { data: page } = await axios.get(
+      const { data: page } = await axios.get<HTML>(
         `https://kick.com/${channel_slug}/videos/${id}`,
         axiosConfig
       );
@@ -57,10 +60,12 @@ const scrapKick = async (channel_slug, notify) => {
       }
     }
   } catch (error) {
-    if (!error.message.includes('timeout')) {
-      console.log(error.message);
+    if (isAxiosError(error)) {
+      if (!error.message.includes('timeout')) {
+        console.log(error.message);
+      }
     }
   }
 };
 
-module.exports = scrapKick;
+export default scrapKick;

@@ -1,7 +1,8 @@
-const config = require('../../config.json');
-const scrapKick = require('../utils/scrapKick');
+import { Context } from 'hono';
+import config from '../../config.json';
+import scrapKick from '../scrapKick';
 
-const kickManualRoute = async (c) => {
+const kickManualRoute = async (c: Context) => {
   const token = c.req.header('X-Token');
 
   if (token !== config.token) return c.body(null, 401);
@@ -13,4 +14,4 @@ const kickManualRoute = async (c) => {
   return c.body(null, 200);
 };
 
-module.exports = kickManualRoute;
+export default kickManualRoute;

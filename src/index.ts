@@ -1,14 +1,14 @@
-const net = require('net');
-const { Hono } = require('hono');
-const { serve } = require('@hono/node-server');
-const config = require('../config.json');
-const twitchRoute = require('./routes/twitchRoute');
-const kickRoute = require('./routes/kickRoute');
-const kickManualRoute = require('./routes/kickManualRoute');
-const scrapKickApi = require('./utils/scrapKickApi');
+import net from 'net';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
+import config from '../config.json';
+import twitchRoute from './routes/twitchRoute';
+import kickRoute from './routes/kickRoute';
+import kickManualRoute from './routes/kickManualRoute';
+import scrapKickApi from './scrapKickApi';
 
 const waitForProxy = () =>
-  new Promise((resolve) => {
+  new Promise<void>((resolve) => {
     const check = () => {
       const { hostname, port } = new URL(config.proxy);
 
@@ -29,14 +29,14 @@ const waitForProxy = () =>
 (async () => {
   await waitForProxy();
 
-  const app = new Hono({ port: config.port });
+  const app = new Hono();
 
   app.post('/kick/webhook', kickRoute);
   app.post('/kick/manual', kickManualRoute);
 
   app.post('/twitch/webhook', twitchRoute);
 
-  serve(app);
+  serve({ fetch: app.fetch, port: config.port });
 })();
 
 config.channels.forEach((channel) => {

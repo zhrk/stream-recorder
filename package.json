@@ -2,7 +2,7 @@
   "name": "stream-recorder",
   "version": "0.0.0",
   "scripts": {
-    "start": "node ./src/index.js"
+    "start": "tsx --no-warnings src/index.ts"
   },
   "dependencies": {
     "@hono/node-server": "2.1.5",

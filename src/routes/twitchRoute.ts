@@ -1,9 +1,10 @@
-const { format } = require('date-fns');
-const { verifyTwitch } = require('../utils/verify');
-const downloadStream = require('../utils/downloadStream');
-const { DATE_TIME } = require('../date');
+import { format } from 'date-fns';
+import { verifyTwitch } from '../verify';
+import downloadStream from '../downloadStream';
+import { DATE_TIME } from '../date';
+import { Context } from 'hono';
 
-const twitchRoute = async (c) => {
+const twitchRoute = async (c: Context) => {
   const messageType = c.req.header('twitch-eventsub-message-type');
 
   const messageId = c.req.header('Twitch-Eventsub-Message-Id');
@@ -20,7 +21,7 @@ const twitchRoute = async (c) => {
     subscription: { type },
   } = body;
 
-  if (verifyTwitch(messageId, timestamp, signature, rawBody)) {
+  if (verifyTwitch(messageId!, timestamp!, signature!, rawBody)) {
     if (messageType === 'webhook_callback_verification') return c.body(challenge, 200);
 
     if (messageType === 'notification') {
@@ -53,4 +54,4 @@ const twitchRoute = async (c) => {
   return c.body(null, 204);
 };
 
-module.exports = twitchRoute;
+export default twitchRoute;
