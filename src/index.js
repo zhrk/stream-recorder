@@ -10,7 +10,9 @@ const scrapKickApi = require('./utils/scrapKickApi');
 const waitForProxy = () =>
   new Promise((resolve) => {
     const check = () => {
-      const socket = net.connect(12334, '127.0.0.1', () => {
+      const { hostname, port } = new URL(config.proxy);
+
+      const socket = net.connect(Number(port), hostname, () => {
         socket.destroy();
         resolve();
       });
