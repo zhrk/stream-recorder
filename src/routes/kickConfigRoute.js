@@ -12,7 +12,7 @@ const { channels } = config;
 const kickConfigRoute = async (c) => {
   // await clearKickSubscriptions();
 
-  // for (const channel of channels.filter((item) => item.platorm === 'kick')) {
+  // for (const channel of channels.filter((item) => item.platform === 'kick')) {
   //   await registerKickSubscription(Number(channel.id), 'livestream.status.updated');
   // }
 
@@ -24,11 +24,12 @@ const kickConfigRoute = async (c) => {
         <table>
           <tbody>
             ${subscriptions.data.data.map(
-              (item) => html`<tr>
-                <td>${item.id}</td>
-                <td>${item.broadcaster_user_id}</td>
-                <td>${item.event}</td>
-              </tr>`
+              (item) =>
+                html`<tr>
+                  <td>${item.id}</td>
+                  <td>${item.broadcaster_user_id}</td>
+                  <td>${item.event}</td>
+                </tr>`
             )}
           </tbody>
         </table>

@@ -9,8 +9,6 @@ const kickRoute = require('./routes/kickRoute');
 const kickConfigRoute = require('./routes/kickConfigRoute');
 const kickManualRoute = require('./routes/kickManualRoute');
 
-const { port } = config;
-
 const waitForProxy = () =>
   new Promise((resolve) => {
     const check = () => {
@@ -31,7 +29,7 @@ const waitForProxy = () =>
 (async () => {
   await waitForProxy();
 
-  const app = new Hono({ port });
+  const app = new Hono({ port: config.port });
 
   app.get('/', indexRoute);
 
@@ -44,3 +42,14 @@ const waitForProxy = () =>
 
   serve(app);
 })();
+
+config.channels.forEach((channel) => {
+  if (channel.flags.includes('api')) {
+    const loop = () => {
+      scrapKickApi(channel.name);
+      setTimeout(loop, (Math.random() * 2 + 4) * 60000);
+    };
+
+    loop();
+  }
+});

@@ -15,7 +15,7 @@ const twitchConfigRoute = async (c) => {
 
   // await clearTwitchSubscriptions();
 
-  // for (const channel of channels.filter((item) => item.platorm === 'twitch')) {
+  // for (const channel of channels.filter((item) => item.platform === 'twitch')) {
   //   await registerTwitchSubscription(channel.id, 'stream.online');
   // }
 
@@ -27,12 +27,13 @@ const twitchConfigRoute = async (c) => {
         <table>
           <tbody>
             ${subscriptions.data.data.map(
-              (item) => html`<tr>
-                <td>${item.id}</td>
-                <td>${item.condition.broadcaster_user_id}</td>
-                <td>${item.type}</td>
-                <td>${item.status}</td>
-              </tr>`
+              (item) =>
+                html`<tr>
+                  <td>${item.id}</td>
+                  <td>${item.condition.broadcaster_user_id}</td>
+                  <td>${item.type}</td>
+                  <td>${item.status}</td>
+                </tr>`
             )}
           </tbody>
         </table>

@@ -33,7 +33,7 @@ const kickRoute = async (c) => {
       );
 
       const flags = config.channels.find(
-        (channel) => channel.platorm === 'kick' && channel.id === id
+        (channel) => channel.platform === 'kick' && channel.id === id
       ).flags;
 
       if (flags.includes('download')) {
