@@ -22,7 +22,7 @@ const parseVodPage = (html, id) => {
   return urlMatch && timeMatch && titleMatch
     ? {
         title: titleMatch[1],
-        start_time: timeMatch[1].replace('T', ' ').replace('Z', ' '),
+        start_time: timeMatch[1].replace('T', ' ').replace('Z', ''),
         id,
         url: urlMatch[1].split('?')[0],
       }
