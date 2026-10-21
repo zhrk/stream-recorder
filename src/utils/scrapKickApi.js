@@ -14,10 +14,10 @@ const scrapKickApi = async (channel_slug) => {
     const newVods = data
       .filter((item) => !existingIds.has(item.id))
       .map((item) => ({
-        title: item.title,
+        title: item.session_title,
         start_time: item.start_time,
         id: item.id,
-        url: item.url,
+        url: item.source,
       }));
 
     if (newVods.length > 0) {
