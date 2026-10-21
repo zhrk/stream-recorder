@@ -3,7 +3,6 @@ const { verifyKick } = require('../utils/verify');
 const config = require('../../config.json');
 const scrapKick = require('../utils/scrapKick');
 const downloadStream = require('../utils/downloadStream');
-const { log } = require('../services/logger');
 const { DATE_TIME } = require('../constants/date');
 
 const kickRoute = async (c) => {
@@ -13,8 +12,6 @@ const kickRoute = async (c) => {
 
   const body = await c.req.json();
   const rawBody = await c.req.text();
-
-  log(body, 'kick');
 
   if (await verifyKick(`${messageId}.${timestamp}.${rawBody}`, signature)) {
     const {

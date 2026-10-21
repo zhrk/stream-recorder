@@ -1,7 +1,6 @@
 const { format } = require('date-fns');
 const { verifyTwitch } = require('../utils/verify');
 const downloadStream = require('../utils/downloadStream');
-const { log } = require('../services/logger');
 const { DATE_TIME } = require('../constants/date');
 
 const twitchRoute = async (c) => {
@@ -20,8 +19,6 @@ const twitchRoute = async (c) => {
     challenge,
     subscription: { type },
   } = body;
-
-  log(body, 'twitch');
 
   if (verifyTwitch(messageId, timestamp, signature, rawBody)) {
     if (messageType === 'webhook_callback_verification') return c.body(challenge, 200);

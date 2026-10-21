@@ -2,7 +2,6 @@ const axios = require('axios');
 const UserAgent = require('user-agents');
 const { writeFileSync, readFileSync } = require('fs');
 const { sendMessage } = require('../services/bot');
-const { logKickLink } = require('../services/logger');
 
 const axiosConfig = {
   headers: { 'User-Agent': new UserAgent().toString() },
@@ -52,8 +51,6 @@ const scrapKick = async (channel_slug, notify) => {
 
       oldVods.unshift(vod);
       writeFileSync('vods.json', JSON.stringify(oldVods, null, 2));
-
-      logKickLink(vod);
 
       if (notify) {
         sendMessage(`${vod.title}\n<code>${vod.url}</code>`);
