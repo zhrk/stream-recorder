@@ -2,11 +2,8 @@ const net = require('net');
 const { Hono } = require('hono');
 const { serve } = require('@hono/node-server');
 const config = require('../config.json');
-const indexRoute = require('./routes/indexRoute');
 const twitchRoute = require('./routes/twitchRoute');
-const twitchConfigRoute = require('./routes/twitchConfigRoute');
 const kickRoute = require('./routes/kickRoute');
-const kickConfigRoute = require('./routes/kickConfigRoute');
 const kickManualRoute = require('./routes/kickManualRoute');
 const scrapKickApi = require('./utils/scrapKickApi');
 
@@ -32,14 +29,10 @@ const waitForProxy = () =>
 
   const app = new Hono({ port: config.port });
 
-  app.get('/', indexRoute);
-
   app.post('/kick/webhook', kickRoute);
-  app.get('/kick/config', kickConfigRoute);
   app.post('/kick/manual', kickManualRoute);
 
   app.post('/twitch/webhook', twitchRoute);
-  app.get('/twitch/config', twitchConfigRoute);
 
   serve(app);
 })();

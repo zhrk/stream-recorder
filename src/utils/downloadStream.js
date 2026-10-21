@@ -11,7 +11,7 @@ const downloadStream = (...args) => {
 
   const url = URLS[platform];
   const output = `${config.vods_dir}/${username}-${startTime}.mp4`;
-  const proxy = platform === 'twitch' ? '--http-proxy "http://127.0.0.1:12334" ' : '';
+  const proxy = platform === 'twitch' ? `--http-proxy ${config.proxy}` : '';
 
   spawn(
     'wt',

@@ -26,7 +26,7 @@ const verify = (signatureMessage, signature, publicKey) =>
 const verifyTwitch = (messageId, timestamp, signature, body) => {
   const message = messageId + timestamp + body;
 
-  const hmac = crypto.createHmac('sha256', config.twitch.secret);
+  const hmac = crypto.createHmac('sha256', config.twitch_secret);
   const hmacSignature = 'sha256=' + hmac.update(message).digest('hex');
 
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(hmacSignature));
