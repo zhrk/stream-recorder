@@ -9,6 +9,25 @@ type HTML = string;
 const axiosConfig: AxiosRequestConfig = {
   headers: { 'User-Agent': new UserAgent().toString() },
   responseType: 'text',
+  timeout: 10000,
+};
+
+const get = async <T = HTML>(url: string, config: AxiosRequestConfig, retries = 10) => {
+  let lastError: unknown;
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await axios.get<T>(url, config);
+    } catch (error) {
+      lastError = error;
+
+      if (i < retries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, (i + 1) * 5000));
+      }
+    }
+  }
+
+  throw lastError;
 };
 
 const parseVodPage = (html: HTML, id: string): StoredVods[number] | null => {
@@ -34,7 +53,7 @@ const parseVodPage = (html: HTML, id: string): StoredVods[number] | null => {
 
 const scrapKick = async (channel_slug: string, notify: boolean) => {
   try {
-    const { data: list } = await axios.get(`https://kick.com/${channel_slug}/videos`, axiosConfig);
+    const { data: list } = await get(`https://kick.com/${channel_slug}/videos`, axiosConfig);
 
     const ids = [...new Set([...list.matchAll(/\/videos\/([0-9a-f-]{36})/g)].map((m) => m[1]))];
 
@@ -43,7 +62,7 @@ const scrapKick = async (channel_slug: string, notify: boolean) => {
     const oldVodsIds = oldVods.map((vod) => vod.id);
 
     for (const id of ids.filter((id) => !oldVodsIds.includes(id)).toReversed()) {
-      const { data: page } = await axios.get<HTML>(
+      const { data: page } = await get<HTML>(
         `https://kick.com/${channel_slug}/videos/${id}`,
         axiosConfig
       );
