@@ -9,26 +9,30 @@ const URLS: Record<string, string> = {
 const downloadStream = (...args: string[]) => {
   const [platform, username, channel_slug, startTime] = args;
 
-  const url = URLS[platform];
-  const output = `${config.vods_dir}/${username}-${startTime}.mp4`;
-  const proxy = platform === 'twitch' ? `--http-proxy ${config.proxy}` : '';
-
-  spawn(
+  // prettier-ignore
+  const child = spawn(
     'wt',
     [
       '-w',
       '-1',
       'powershell',
       '-Command',
-      `streamlink`,
-      `--hls-live-restart`,
-      `--hls-playlist-reload-attempts 60`,
-      `${proxy}${url}/${channel_slug}`,
-      `best`,
-      `-o ${output}`,
+      'streamlink',
+      '--retry-streams', '5',
+      '--retry-max', '12',
+      '--retry-open', '5',
+      '--stream-segment-threads', '3',
+      '--hls-live-restart',
+      '--hls-playlist-reload-attempts', '15',
+      ...(platform === 'twitch' ? ['--http-proxy', config.proxy] : []),
+      `${URLS[platform]}/${channel_slug}`,
+      'best',
+      '-o', `${config.vods_dir}/${username}-${startTime}.mp4`,
     ],
     { stdio: 'ignore', detached: true }
   );
+
+  child.unref();
 };
 
 export default downloadStream;
