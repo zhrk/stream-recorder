@@ -6,18 +6,33 @@ import { sendMessage } from './bot';
 
 type HTML = string;
 
+const videoIdRegex = /\/videos\/([0-9a-f-]{36})/g;
+
 const axiosConfig: AxiosRequestConfig = {
-  headers: { 'User-Agent': new UserAgent().toString() },
   responseType: 'text',
   timeout: 10000,
 };
 
-const get = async <T = HTML>(url: string, config: AxiosRequestConfig, retries = 10) => {
+const get = async <T = HTML>(
+  url: string,
+  config: AxiosRequestConfig,
+  validate?: (data: T) => boolean,
+  retries = 10
+) => {
   let lastError: unknown;
 
   for (let i = 0; i < retries; i++) {
     try {
-      return await axios.get<T>(url, config);
+      const response = await axios.get<T>(url, {
+        ...config,
+        headers: { ...config.headers, 'User-Agent': new UserAgent().toString() },
+      });
+
+      if (validate && !validate(response.data)) {
+        throw new Error(`Validation failed for ${url}`);
+      }
+
+      return response;
     } catch (error) {
       lastError = error;
 
@@ -53,9 +68,13 @@ const parseVodPage = (html: HTML, id: string): StoredVods[number] | null => {
 
 const scrapKick = async (channel_slug: string, notify: boolean) => {
   try {
-    const { data: list } = await get(`https://kick.com/${channel_slug}/videos`, axiosConfig);
+    const { data: list } = await get(
+      `https://kick.com/${channel_slug}/videos`,
+      axiosConfig,
+      (html) => html.match(videoIdRegex) !== null
+    );
 
-    const ids = [...new Set([...list.matchAll(/\/videos\/([0-9a-f-]{36})/g)].map((m) => m[1]))];
+    const ids = [...new Set([...list.matchAll(videoIdRegex)].map((m) => m[1]))];
 
     const oldVods: StoredVods = JSON.parse(readFileSync('vods.json', 'utf8'));
 
@@ -64,7 +83,8 @@ const scrapKick = async (channel_slug: string, notify: boolean) => {
     for (const id of ids.filter((id) => !oldVodsIds.includes(id)).toReversed()) {
       const { data: page } = await get<HTML>(
         `https://kick.com/${channel_slug}/videos/${id}`,
-        axiosConfig
+        axiosConfig,
+        (html) => parseVodPage(html, id) !== null
       );
 
       const vod = parseVodPage(page, id);
